@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三铭2046的个人网站</title>
-    <meta name="description" content="三铭2046的个人网站，展示我的作品和技能">
+    <title>郭三铭网站</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- 添加Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="#photo-carousel">首页</a></li>
-                <li><a href="#about-me">关于我</a></li>
-                <li><a href="#qa-interaction">问答</a></li>
-                <li><a href="#contact">联系我</a></li>
-            </ul>
-        </nav>
+        <h1>欢迎来到郭三铭网站</h1>
     </header>
 
     <main>
-        <section id="photo-carousel">
-            <h1>欢迎来到我的个人网站</h1>
-            <div class="carousel">
-                <img src="images/微信图片_20200619095017.jpg" alt="个人作品展示1">
-                <img src="images/微信图片_20200619095040.jpg" alt="个人作品展示2">
-                <img src="images/微信图片_20200619095045.jpg" alt="个人作品展示3">
-                <img src="images/微信图片_20200619095051.jpg" alt="个人作品展示4">
-                <img src="images/微信图片_20200619095056.jpg" alt="个人作品展示5">
-                <img src="images/微信图片_20200619095101.jpg" alt="个人作品展示6">
-                <img src="images/微信图片_20200619095106.jpg" alt="个人作品展示7">
-                <img src="images/微信图片_20200619095112.jpg" alt="个人作品展示8">
-                <button class="carousel-button prev">&lt;</button>
-                <button class="carousel-button next">&gt;</button>
+        <section id="showcase">
+            <div class="showcase-container">
+                <div id="photo-carousel">
+                    <div class="carousel">
+                        <img src="images/微信图片_20200619095017.jpg" alt="个人作品展示1">
+                        <img src="images/微信图片_20200619095040.jpg" alt="个人作品展示2">
+                        <img src="images/微信图片_20200619095045.jpg" alt="个人作品展示3">
+                        <img src="images/微信图片_20200619095051.jpg" alt="个人作品展示4">
+                        <img src="images/微信图片_20200619095056.jpg" alt="个人作品展示5">
+                        <img src="images/微信图片_20200619095101.jpg" alt="个人作品展示6">
+                        <img src="images/微信图片_20200619095106.jpg" alt="个人作品展示7">
+                        <img src="images/微信图片_20200619095112.jpg" alt="个人作品展示8">
+                        <button class="carousel-button prev">&lt;</button>
+                        <button class="carousel-button next">&gt;</button>
+                    </div>
+                </div>
+                <div id="location">
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d231263.10966561334!2d121.22859453671874!3d25.049707800000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a96162c7abdf%3A0xc661c52147373706!2z5rOV5Zu9546r55Gw!5e0!3m2!1szh-CN!2stw!4v1650000000000!5m2!1szh-CN!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -50,9 +52,19 @@
         </section>
 
         <section id="qa-interaction">
-            <h2>有问题吗？问问我吧！</h2>
+            <h2>关于台北市法国玫瑰项目，您有什么想问的？</h2>
+            <p>法国玫瑰是位于台北市的高端住宅项目，拥有134户，总楼高11层，距今已有19年历史。</p>
+            <div class="example-questions">
+                <p>示例问题：</p>
+                <ul>
+                    <li class="example-question">法国玫瑰的地址在哪里？</li>
+                    <li class="example-question">这个项目的公设比是多少？</li>
+                    <li class="example-question">最近一年的平均成交价是多少？</li>
+                    <li class="example-question">项目附近的学区情况如何？</li>
+                </ul>
+            </div>
             <div class="qa-container">
-                <input type="text" id="question-input" placeholder="在这里输入你的问题">
+                <input type="text" id="question-input" placeholder="请输入您关于台北市法国玫瑰项目的问题">
                 <button id="ask-button">提问</button>
                 <div id="answer-display"></div>
             </div>
@@ -60,16 +72,13 @@
 
         <section id="contact">
             <h2>联系我</h2>
-            <ul class="social-links">
-                <li><a href="https://github.com/sanming2046" target="_blank">GitHub</a></li>
-                <li><a href="https://linkedin.com/in/sanming2046" target="_blank">LinkedIn</a></li>
-                <li><a href="mailto:sanming2046@example.com">Email</a></li>
-            </ul>
+            <p><i class="fas fa-envelope"></i> <a href="mailto:san@amtxts.com">san@amtxts.com</a></p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2023 三铭2046的个人网站. 保留所有权利。</p>
+        <p>&copy; 2023 郭三铭网站. 保留所有权利。</p>
+        <p><i class="fas fa-envelope"></i> <a href="mailto:san@amtxts.com">san@amtxts.com</a></p>
     </footer>
 
     <script src="script.js"></script>
