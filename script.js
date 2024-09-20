@@ -41,16 +41,46 @@ const questionInput = document.getElementById('question-input');
 const askButton = document.getElementById('ask-button');
 const answerDisplay = document.getElementById('answer-display');
 
-// 更新问答部分
-const qa = {
-    "你好": "你好！很高兴认识你。",
-    "你是谁": "我是三铭2046的个人网站助手。",
-    "三铭2046是谁": "三铭2046是一名热爱创新的软件工程师，专注于前端开发和用户体验设计。",
-    "三铭2046的技能是什么": "三铭2046擅长HTML5、CSS3、JavaScript、React和UI/UX设计。"
-};
+// 更新问答功能
+const API_KEY = 'AIzaSyCv0QbzMhzCg-x7QjGDfOUuhTzE6s2n1DA';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
-askButton.addEventListener('click', () => {
+async function askGemini(question) {
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    const response = await fetch(corsProxy + `${API_URL}?key=${API_KEY}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            contents: [{
+                parts: [{
+                    text: question
+                }]
+            }]
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error('API请求失败');
+    }
+
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
+}
+
+askButton.addEventListener('click', async () => {
     const question = questionInput.value.trim();
-    const answer = qa[question] || "抱歉，我没有这个问题的答案。";
-    answerDisplay.textContent = answer;
+    if (question) {
+        answerDisplay.textContent = "正在思考...";
+        try {
+            const answer = await askGemini(question);
+            answerDisplay.textContent = answer;
+        } catch (error) {
+            console.error('Error:', error);
+            answerDisplay.textContent = "抱歉，我现在无法回答这个问题。";
+        }
+    } else {
+        answerDisplay.textContent = "请输入一个问题。";
+    }
 });
