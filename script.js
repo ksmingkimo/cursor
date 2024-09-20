@@ -45,9 +45,17 @@ const answerDisplay = document.getElementById('answer-display');
 const API_KEY = 'AIzaSyCv0QbzMhzCg-x7QjGDfOUuhTzE6s2n1DA';
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
-async function askGemini(question) {
-    try {
-        const projectInfo = `
+const presetAnswers = {
+    "法国玫瑰的地址在哪里？": "法国玫瑰的地址是台北市松江路77巷2号。",
+    "这个项目的公设比是多少？": "法国玫瑰项目的公设比是36.28%。",
+    "租金是多少？": "法国玫瑰项目的租金是21000元/月。",
+    "项目附近的学区情况如何？": "法国玫瑰项目的学区情况是：国小学区为长安国小（双语），国中学区为长安国中（双语）。"
+};
+
+async function askGemini(question, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            const projectInfo = `
 法国玫瑰是一个位于台北市的高端住宅项目。以下是项目的基本资料：
 - 地址：松江路77巷2号
 - 总户数：134户
@@ -56,16 +64,15 @@ async function askGemini(question) {
 - 土地使用分区：住3、商2
 - 公设比：36.28%
 - 基地面积：231坪
-- 构造种类：RC
+- 构造种类：RC（钢筋混凝土）
 - 车位类别：坡道平面
 - 车位数量：26
+- 充电设备：未知
 - 国小学区：长安国小（双语）
 - 国中学区：长安国中（双语）
 - 建设公司：成德建设
-- 建筑设计：陈克聚
-- 营造公司：助群营造
-- 租金：21000元/套
-- 交通：近捷运站，双捷运
+- 建筑设计：陳克聚
+- 租金：21000元/月
 
 房价信息：
 - 一年成交均价：137.95万/坪
@@ -75,55 +82,70 @@ async function askGemini(question) {
 
 请根据以上信息回答关于法国玫瑰项目的问题。如果问题不相关，请礼貌地将话题引导回法国玫瑰项目。`;
 
-        const contextPrompt = projectInfo + "\n\n问题是：";
-        const fullQuestion = contextPrompt + question;
+            const contextPrompt = projectInfo + "\n\n问题是：";
+            const fullQuestion = contextPrompt + question;
 
-        const response = await fetch(`${API_URL}?key=${API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: fullQuestion
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.6,
-                    topK: 1,
-                    topP: 1,
-                    maxOutputTokens: 2048,
-                }
-            })
-        });
+            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: fullQuestion
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.3, // 降低温度以获得更一致的回答
+                        topK: 1,
+                        topP: 1,
+                        maxOutputTokens: 2048,
+                    }
+                })
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`API请求失败: ${response.status}, ${JSON.stringify(errorData)}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(`尝试 ${attempt + 1} 失败:`, errorData);
+                throw new Error(`API请求失败: ${response.status}, ${JSON.stringify(errorData)}`);
+            }
+
+            const data = await response.json();
+            console.log(`尝试 ${attempt + 1} 成功, API响应数据:`, data);
+
+            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0]) {
+                throw new Error('API响应格式不符合预期');
+            }
+
+            return data.candidates[0].content.parts[0].text;
+        } catch (error) {
+            console.error(`尝试 ${attempt + 1} 错误:`, error);
+            if (attempt === retries - 1) {
+                throw error; // 如果是最后一次尝试，则抛出错误
+            }
+            // 否则等待一秒后重试
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
-
-        const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
-    } catch (error) {
-        console.error('错误:', error);
-        throw error;
     }
 }
 
-// 新增：处理提问的函数
 async function handleAsk() {
     const question = questionInput.value.trim();
     if (question) {
         answerDisplay.textContent = "正在思考关于法国玫瑰项目的回答...";
         try {
-            console.log("发送问题:", question);
-            const answer = await askGemini(question);
+            let answer;
+            if (presetAnswers[question]) {
+                answer = presetAnswers[question];
+            } else {
+                answer = await askGemini(question);
+            }
             console.log("收到回答:", answer);
             answerDisplay.textContent = answer;
         } catch (error) {
             console.error("详细错误信息:", error);
-            answerDisplay.textContent = `抱歉，在回答关于法国玫瑰项目的问题时发生了错误: ${error.message}`;
+            answerDisplay.textContent = `抱歉，在回答关于法国玫瑰项目的问题时发生了错误。请稍后再试或联系管理员。错误详情: ${error.message}`;
         }
     } else {
         answerDisplay.textContent = "请输入一个关于法国玫瑰项目的问题。";
